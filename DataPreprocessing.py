@@ -29,3 +29,37 @@ X=X[:,1:]
 from sklearn.model_selection import train_test_split
 X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=42)
 
+
+### Handling multiple categorical features
+
+use_cols=['SibSp','Pclass','Age','Parch','Sex','Embarked','Survived']
+
+dataset=pd.read_csv("titanic.csv",usecols=use_cols)
+
+temp=pd.get_dummies(dataset['Sex'],drop_first=True)
+newdf=pd.concat([temp,dataset],axis='columns')
+temp=pd.get_dummies(dataset['Embarked'],drop_first=True)
+newdf=pd.concat([temp,newdf],axis='columns')
+newdf.drop(['Sex','Embarked'],axis=1,inplace=True)
+
+newdf.isnull().sum()
+
+newdf=newdf.fillna({'Age':newdf['Age'].mean()})
+newdf.isnull().sum()
+
+y=newdf['Survived']
+X=newdf.drop('Survived',axis=1)
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=42)
+
+
+from sklearn.linear_model import  LogisticRegression
+model=LogisticRegression()
+model.fit(X_train,y_train)
+
+y_pred=model.predict(X_test)
+
+from sklearn.metrics import confusion_matrix,accuracy_score
+metrix=confusion_matrix(y_test,y_pred)
+accuracy_score(y_test,y_pred)
