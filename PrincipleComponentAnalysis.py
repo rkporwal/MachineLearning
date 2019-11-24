@@ -5,19 +5,11 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 
-genes =['gene'+str(i) for i in range (1,101)]
 
-wt=['wt'+str(i) for i in range (1,6)]
-ko=['ko'+str(i) for i in range (1,6)]
 
-data=pd.DataFrame(columns=[*wt,*ko],index=genes)
+dataset=pd.read_csv("CellPhone.csv")
+X=dataset.iloc[:,0:21].values
 
-for gene in data.index :
-    data.loc[gene,'wt1':'wt5']=np.random.poisson(lam=rd.randrange(10,1000),size=5)
-    data.loc[gene, 'ko1':'ko5']=np.random.poisson(lam=rd.randrange(10,1000),size=5)
-
-print(data.head(5))
-
-scale_data=preprocessing.scale(data.T)
-#StandardScaler().fit_transform(data.T)
-
+pca=PCA()
+X=pca.fit_transform(X)
+pca.explained_variance_ratio_
